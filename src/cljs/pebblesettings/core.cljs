@@ -22,7 +22,7 @@
         return-to (session/get :return-to)
         url (str (or return-to "pebblejs://close#")
                  query-str)]
-    (.replace js/location url)))
+    (set! (.-href js/location) url)))
 
 (defn form []
   (let [value (atom {:stop-id 4016
