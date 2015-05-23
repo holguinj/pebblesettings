@@ -19,10 +19,11 @@
   (let [payload {:stopID stop-id
                  :bus bus}
         query-str (-> payload clj->json js/encodeURIComponent)
-        return-to (session/get :return-to)
-        url (str (or return-to "pebblejs://close#")
-                 query-str)]
-    (set! (.-href js/location) url)))
+        return-to (session/get :return-to "pebblejs://close#")
+        url (str return-to query-str)]
+    (println "redirecting to:" url)
+    (set! (.-href js/location) url)
+    false))
 
 (defn form []
   (let [value (atom {:stop-id 4016
@@ -31,14 +32,14 @@
       [:div
        [:form
         "Stop ID: "
-        [:input {:type "tel"
+        [:input {:type "number"
                  :pattern "[0-9]"
                  :value (:stop-id @value)
                  :on-change #(swap! value update-in [:stop-id]
                                     (-> % .-target .-value))}]
         [:p
          "Bus: "
-         [:input {:type "tel"
+         [:input {:type "number"
                   :pattern "[0-9]"
                   :value (:bus @value)
                   :on-change #(swap! value update-in [:bus]
@@ -58,12 +59,13 @@
 
 (secretary/defroute "/" []
   (let [location (.-location js/document)
-        return-to (->> location
+        return-to (some->> location
                     str
                     (re-find #"return_to=(.*)")
                     second
                     js/decodeURIComponent)]
-    (session/put! :return-to return-to)))
+    (if (some? return-to)
+      (session/put! :return-to return-to))))
 
 ;; -------------------------
 ;; History
