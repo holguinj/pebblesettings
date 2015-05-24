@@ -50,7 +50,8 @@
                   :on-change #(swap! value update-in [:bus]
                                      (-> % .-target .-value))}]]
         [:p
-         [:input {:type "submit"
+         [:input {:type "button"
+                  :value "submit"
                   :on-click #(submit-form @value)}]]]])))
 
 (defn main-page []
