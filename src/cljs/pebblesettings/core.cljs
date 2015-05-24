@@ -41,14 +41,14 @@
                  :pattern "[0-9]"
                  :value (:stop-id @value)
                  :on-change #(swap! value update-in [:stop-id]
-                                    (-> % .-target .-value))}]
+                                    (constantly (-> % .-target .-value)))}]
         [:p
          "Bus: "
          [:input {:type "number"
                   :pattern "[0-9]"
                   :value (:bus @value)
                   :on-change #(swap! value update-in [:bus]
-                                     (-> % .-target .-value))}]]
+                                     (constantly (-> % .-target .-value)))}]]
         [:p
          [:input {:type "button"
                   :value "submit"
