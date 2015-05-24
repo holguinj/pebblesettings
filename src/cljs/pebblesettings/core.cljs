@@ -15,6 +15,12 @@
 (defn current-page []
   [:div [(session/get :current-page)]])
 
+(defn redirect! [url]
+  #_(.open js/window url)
+  #_(.replace js/location url)
+  (set! (.-href (.-location js/window))
+        url))
+
 (defn submit-form [{:keys [stop-id bus]}]
   (let [payload {:stopID stop-id
                  :bus bus}
@@ -22,8 +28,7 @@
         return-to (session/get :return-to "pebblejs://close#")
         url (str return-to query-str)]
     (println "redirecting to:" url)
-    (set! (.-href js/location) url)
-    false))
+    (redirect! url)))
 
 (defn form []
   (let [value (atom {:stop-id 4016
