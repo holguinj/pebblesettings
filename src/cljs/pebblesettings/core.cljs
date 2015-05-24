@@ -25,8 +25,11 @@
   (let [payload {:stopID stop-id
                  :bus bus}
         query-str (-> payload clj->json js/encodeURIComponent)
-        return-to "pebblejs://close#"
-        url (str return-to query-str)]
+        return-to (session/get :return-to)
+        base (if (pos? (count return-to))
+               return-to
+               "pebblejs://close#")
+        url (str base query-str)]
     (println "redirecting to:" url)
     (redirect! url)))
 
